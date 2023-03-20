@@ -25,14 +25,19 @@ import com.example.waterme.viewmodel.PlantViewModel
 import com.example.waterme.viewmodel.PlantViewModelFactory
 import java.util.concurrent.TimeUnit
 
-class ReminderDialogFragment(private val plantName: String) : DialogFragment() {
+class ReminderDialogFragment(
+    private val plantName: String
+    ) : DialogFragment()
+{
 
     private val viewModel: PlantViewModel by viewModels {
-        PlantViewModelFactory(requireActivity().application)
+        PlantViewModelFactory( requireActivity().application )
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
         return activity?.let {
+
             val builder = AlertDialog.Builder(it)
                 .setTitle(R.string.water_reminder)
                 .setItems(R.array.water_schedule_array) { _, position ->
@@ -52,6 +57,7 @@ class ReminderDialogFragment(private val plantName: String) : DialogFragment() {
                     }
                 }
             builder.create()
+
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 }

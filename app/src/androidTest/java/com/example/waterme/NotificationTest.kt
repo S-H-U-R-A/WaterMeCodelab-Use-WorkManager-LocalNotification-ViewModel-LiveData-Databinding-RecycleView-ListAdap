@@ -52,7 +52,7 @@ class NotificationTest {
 
     @Before
     fun setup() {
-        uiDevice = UiDevice.getInstance(getInstrumentation())
+        uiDevice = UiDevice.getInstance( getInstrumentation() )
         onView(withText("Carrot")).perform(longClick())
         onView(withText("5 seconds")).perform(click())
         uiDevice.pressHome()

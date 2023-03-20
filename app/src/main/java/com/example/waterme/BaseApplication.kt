@@ -25,21 +25,37 @@ class BaseApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        //SI LA VERSIÓN DEL SDK DE COMPILACIÓN ES MAYOR A OREO
+        //SE CREA EL CANAL PARA LA NOTIFICACIÓN
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            //SE CONFIGURA Y CREA EL CANAL
             val name = getString(R.string.channel_name)
             val descriptionText = getString(R.string.channel_description)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                name,
+                importance
+            ).apply {
                 description = descriptionText
             }
-            // Register the channel with the system
+
+            //SE OBTIENE EL MANEJADOR DE NOTIFICACIONES
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+
+            //SE AGREGA EL CANAL EN EL SISTEMA OPERATIVO
+            notificationManager.createNotificationChannel(
+                channel
+            )
         }
+
     }
 
     companion object {
+        //ID DEL CANAL
         const val CHANNEL_ID = "water_reminder_id"
     }
 }

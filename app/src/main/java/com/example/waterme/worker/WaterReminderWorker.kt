@@ -29,37 +29,67 @@ import com.example.waterme.R
 class WaterReminderWorker(
     context: Context,
     workerParams: WorkerParameters
-) : Worker(context, workerParams) {
+) : Worker(
+    context,
+    workerParams
+) {
 
     // Arbitrary id number
     val notificationId = 17
 
     override fun doWork(): Result {
-        val intent = Intent(applicationContext, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        val intent = Intent(
+            applicationContext,
+            MainActivity::class.java
+        ).apply {
+            flags =
+                //ACÁ SE INDICA QUE LA ACTIVIDAD PASADA PARA ESTE CASO MainActivity
+                //ES UNA NUEVA TAREA DE LA APLICACIÓN
+                Intent.FLAG_ACTIVITY_NEW_TASK or
+                //INDICA QUE CUANDO SE EJECUTE ESTE INTENT TODAS LAS ACTIVIDADES
+                //EXISTENTES DEBEN ELIMINARSE CONVIRTIENDO ESTA NUEVA EN LA
+                //UNICA EN LA PILA
+                Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
-        val pendingIntent: PendingIntent = PendingIntent
-            .getActivity(applicationContext, 0, intent, 0)
+        //ESTE OBJETO EJECUTA EL INTENT CUANDO LO USEN A EL O USANDO
+        //EL MÉTODO SEND DE EL MISMO OBJETO
+        val pendingIntent: PendingIntent =
+            PendingIntent.getActivity(
+                applicationContext,
+                0,
+                intent, //<-Intent envuelto
+                0
+            )
 
+        //SE RECUPERA EL NOMBRE DE LA PLANTA
         val plantName = inputData.getString(nameKey)
 
-        val builder = NotificationCompat.Builder(applicationContext, BaseApplication.CHANNEL_ID)
+        //SE CONSTRUYE LA NOTIFICACIÓN
+        val builder = NotificationCompat.Builder(
+            applicationContext,
+            BaseApplication.CHANNEL_ID
+        )
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setContentTitle("Water me!")
             .setContentText("It's time to water your $plantName")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(pendingIntent)
+            .setPriority( NotificationCompat.PRIORITY_HIGH )
+            .setContentIntent( pendingIntent )
             .setAutoCancel(true)
 
-        with(NotificationManagerCompat.from(applicationContext)) {
+        with(
+            NotificationManagerCompat.from( applicationContext )
+        ) {
+            //SE ENVIA LA NOTIFICACIÓN
             notify(notificationId, builder.build())
         }
-
+        //SE RETONA EL WORKER COMO EXITOSO
         return Result.success()
     }
 
     companion object {
+        //NOMBRE DE LA CLAVE DEL MAPA PARA RECUPERAR EL VALOR ENVIADO AL WORKER
         const val nameKey = "NAME"
     }
 }
